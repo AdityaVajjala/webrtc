@@ -13,10 +13,10 @@ app.use(session({
     resave: true,
     saveUninitialized: false
 }));
-
+const conn = process.env.db_connection_string || config.db_connection_string
 global.Promise = require('bluebird')
 mongoose.Promise = global.Promise
-mongoose.connect(config.db_connection_string)
+mongoose.connect(conn)
 
 global.secret = config.secert
 app.use(bodyParser.urlencoded({ extended: true }))
