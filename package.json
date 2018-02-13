@@ -1,0 +1,34 @@
+{
+    "name": "nodejswebrtc",
+    "version": "1.0.0",
+    "description": "webrtc",
+    "main": "main.js",
+    "scripts": {
+        "test": "npm start",
+        "start": "node main.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AdityaVajjala/webrtc.git"
+    },
+    "author": "Aditya Vajjala",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/AdityaVajjala/webrtc/issues"
+    },
+    "dependencies": {
+        "bluebird": "^3.5.1",
+        "body-parser": "^1.18.2",
+        "express": "^4.16.2",
+        "express-session": "^1.15.6",
+        "jsonwebtoken": "^8.1.1",
+        "mongodb": "^2.2.33",
+        "mongoose": "^4.13.1",
+        "wait.for": "0.6.6",
+        "bcrypt": "^1.0.3"
+    },
+    "engines": {
+        "node": "8.6.0"
+    },
+    "homepage": "https://github.com/AdityaVajjala/webrtc#readme"
+}
