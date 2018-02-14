@@ -49,7 +49,7 @@ exports.user_name = (req, res) => {
 
 const authenticate = (email, password) => {
     return new Promise(function(resolve, reject) {
-        Users.GetUserByEmail(email).exec(function(err, user) {
+        Users.checkForExistingUser(email).exec(function(err, user) {
             if (err || !user) {
                 var err = new Error(constants.user_not_found_by_email);
                 err.status = constants.user_not_found;
@@ -68,7 +68,7 @@ const authenticate = (email, password) => {
     })
 }
 const generate_token = (user, req, res) => {
-    var token = jwt.sign({ id: user._id }, global.secret, {
+    var token = jwt.sign({ id: user._id, sign_in_time: Date.now() }, global.secret, {
         expiresIn: 86400,
     })
     token.auth = true

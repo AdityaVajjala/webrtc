@@ -65,5 +65,8 @@ user_schema.statics.GetUserById = function(userId) {
 user_schema.statics.GetUserByEmail = function(emailId) {
     return this.model('Users').findOne({ email_id: emailId, is_active: true })
 }
+user_schema.statics.checkForExistingUser = function(emailId) {
+    return this.model('Users').findOne({ email_id: emailId, is_active: true, is_guest: false })
+}
 
 module.exports = mongoose.model('Users', user_schema);
