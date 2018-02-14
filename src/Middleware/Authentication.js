@@ -7,14 +7,7 @@ module.exports = (req, res, next) => {
     jwt.verify(token, global.secret, function(err, decoded) {
         if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
         if (!req.session.user) {
-            var promise = Users.findById(decoded.id);
-            promise.then(user => {
-                req.session.user = user;
-                next();
-            });
-            promise.catch(err => {
-                res.send('Unable to Authorize');
-            });
+            res.status(500).send({ auth: false, message: 'Please sign in again.' });
         } else {
             next();
         }

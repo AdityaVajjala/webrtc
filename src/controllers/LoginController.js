@@ -47,6 +47,12 @@ exports.user_name = (req, res) => {
     res.send(req.session.user.email_id)
 }
 
+exports.logout = (req, res) => {
+    req.session.destroy();
+    res.status(200);
+    res.send({});
+}
+
 const authenticate = (email, password) => {
     return new Promise(function(resolve, reject) {
         Users.checkForExistingUser(email).exec(function(err, user) {
@@ -67,6 +73,7 @@ const authenticate = (email, password) => {
         });
     })
 }
+
 const generate_token = (user, req, res) => {
     var token = jwt.sign({ id: user._id, sign_in_time: Date.now() }, global.secret, {
         expiresIn: 86400,
