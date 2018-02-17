@@ -1,18 +1,17 @@
-const auth = require('./Middleware/Authentication')
+const Login = require('./controllers/LoginController')
+const Auth = require('./Middleware/Authentication')
 
 module.exports = (app, jsonDecoder) => {
-    const login = require('./controllers/LoginController')
-    const auth = require('./Middleware/Authentication')
 
     app.route('/login')
-        .post(login.challange_login)
+        .post(Login.challange_login)
 
     app.route('/signup')
-        .post(login.sign_up)
+        .post(Login.sign_up)
 
-    app.route('/username')
-        .get(auth, login.user_name)
+    app.route('/user')
+        .get(Auth, Login.user)
 
     app.route('/logout')
-        .get(auth, login.logout)
+        .get(Auth, Login.logout)
 }

@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const bcrypt = require('bcrypt');
-const constants = require('../constants')
+const Mongoose = require('mongoose');
+const Schema = Mongoose.Schema;
+const Bcrypt = require('bcrypt');
 
 let user_schema = new Schema({
     first_name: {
@@ -24,6 +23,10 @@ let user_schema = new Schema({
         required: '',
         default: false
     },
+    meetings: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Meetings'
+    }],
     created_at: {
         type: Date,
         default: Date.now()
@@ -41,7 +44,7 @@ let user_schema = new Schema({
 user_schema.pre('save', function(next) {
     var user = this;
     if (user.password_salt) {
-        bcrypt.hash(user.password_salt, 10, function(err, hash) {
+        Bcrypt.hash(user.password_salt, 10, function(err, hash) {
             if (err) {
                 return next(err);
             }
@@ -55,18 +58,23 @@ user_schema.pre('save', function(next) {
 
 });
 
-user_schema.statics.GetAll = function() {
+user_schema.statics.get_all = function() {
     return this.model('Users').find({ is_active: true })
 }
-user_schema.statics.GetUserById = function(userId) {
+user_schema.statics.get_user_by_id = function(userId) {
     return this.model('Users').findById(userId)
 }
 
-user_schema.statics.GetUserByEmail = function(emailId) {
+user_schema.statics.get_user_by_email = function(emailId) {
     return this.model('Users').findOne({ email_id: emailId, is_active: true })
 }
-user_schema.statics.checkForExistingUser = function(emailId) {
+user_schema.statics.check_for_existing_user = function(emailId) {
     return this.model('Users').findOne({ email_id: emailId, is_active: true, is_guest: false })
 }
 
-module.exports = mongoose.model('Users', user_schema);
+user_schema.methods.get_display_name = () => {
+    return _this.first_name + ' ' + _this.last_name;
+}
+
+
+module.exports = Mongoose.model('Users', user_schema);

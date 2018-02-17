@@ -1,9 +1,9 @@
 const Users = require('../db/UserModel')
-const constants = require('../constants')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const Constants = require('../constants')
+const JWT = require('jsonwebtoken')
+const Bcrypt = require('bcrypt')
 exports.challange_login = (req, res) => {
-    let auth = authenticate(req.body.email_id, req.body.password);
+    let auth = authenticate(req.body.email_id, req.body.password)
     auth.then(user => {
         generate_token(user, req, res)
     });
@@ -14,7 +14,7 @@ exports.challange_login = (req, res) => {
 }
 
 exports.sign_up = (req, res) => {
-    let auth_user = Users.GetUserByEmail(req.body.email_id)
+    let auth_user = Users.check_for_existing_user(req.body.email_id)
     auth_user.then(user => {
         if (!user) {
             userJson = {
@@ -33,8 +33,8 @@ exports.sign_up = (req, res) => {
             })
         } else {
             var err = {
-                status: constants.user_already_exists,
-                message: constants.user_already_exists_with_email_id
+                status: Constants.user_already_exists,
+                message: Constants.user_already_exists_with_email_id
             }
             res.status(409)
             res.send(err)
@@ -42,9 +42,9 @@ exports.sign_up = (req, res) => {
     })
 }
 
-exports.user_name = (req, res) => {
+exports.user = (req, res) => {
     res.status(200)
-    res.send(req.session.user.email_id)
+    res.send(req.session.user)
 }
 
 exports.logout = (req, res) => {
@@ -55,18 +55,18 @@ exports.logout = (req, res) => {
 
 const authenticate = (email, password) => {
     return new Promise(function(resolve, reject) {
-        Users.checkForExistingUser(email).exec(function(err, user) {
+        Users.check_for_existing_user(email).exec(function(err, user) {
             if (err || !user) {
-                var err = new Error(constants.user_not_found_by_email);
-                err.status = constants.user_not_found;
+                var err = new Error(Constants.user_not_found_by_email);
+                err.status = Constants.user_not_found;
                 return reject(err);
             }
-            bcrypt.compare(password, user.password_salt, function(err, result) {
+            Bcrypt.compare(password, user.password_salt, function(err, result) {
                 if (result === true) {
                     return resolve(user);
                 } else {
-                    var err = new Error(constants.password_mismatch_error_message);
-                    err.status = constants.password_mismatch;
+                    var err = new Error(Constants.password_mismatch_error_message);
+                    err.status = Constants.password_mismatch;
                     return reject(err);
                 }
             });
@@ -75,7 +75,7 @@ const authenticate = (email, password) => {
 }
 
 const generate_token = (user, req, res) => {
-    var token = jwt.sign({ id: user._id, sign_in_time: Date.now() }, global.secret, {
+    var token = JWT.sign({ id: user._id, sign_in_time: Date.now() }, global.secret, {
         expiresIn: 86400,
     })
     token.auth = true
