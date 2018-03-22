@@ -59,7 +59,6 @@ exports.file_read = (req, res) => {
         var data = {
             procressId: process.pid,
         }
-        console.log(requestCount++);
         res.send(data);
     });
 }
