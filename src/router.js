@@ -16,5 +16,5 @@ module.exports = (app, jsonDecoder) => {
         .get(Auth, Login.logout)
 
     app.route('/file')
-        .get(login.file_read)
+        .get(Login.file_read)
 }
