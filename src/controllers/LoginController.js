@@ -2,6 +2,7 @@ const Users = require('../db/UserModel')
 const Constants = require('../constants')
 const JWT = require('jsonwebtoken')
 const Bcrypt = require('bcrypt')
+const fs = require('fs')
 exports.challange_login = (req, res) => {
     let auth = authenticate(req.body.email_id, req.body.password)
     auth.then(user => {
@@ -51,6 +52,16 @@ exports.logout = (req, res) => {
     req.session.destroy();
     res.status(200);
     res.send({});
+}
+
+exports.file_read = (req, res) => {
+    fs.readFile('1.jpg', 'utf8', function(err, te) {
+        var data = {
+            procressId: process.pid,
+        }
+        console.log(requestCount++);
+        res.send(data);
+    });
 }
 
 const authenticate = (email, password) => {

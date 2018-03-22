@@ -9,8 +9,8 @@ let meeting_participants = new Schema({
         required: 'Meeting Id is required'
     },
     user_id: {
-        type: String,
-        required: 'User Id is required'
+        type: Schema.Types.ObjectId,
+        ref: 'Users'
     },
     role_id: {
         type: String,
@@ -24,8 +24,8 @@ let meeting_participants = new Schema({
         default: true
     },
     created_by: {
-        type: String,
-        required: 'Creator is required for meeting'
+        type: Schema.Types.ObjectId,
+        ref: 'Users'
     },
     created_at: {
         type: Date,
@@ -51,3 +51,19 @@ meeting_participants.pre('save', function(next) {
         })
     }
 });
+
+meeting_participants.post('save', function(err, participant) {
+    if (!err) {
+        let meeting_promise = Mongoose.model['Meetings'].find_by_id(participant.meeting_id)
+        meeting_participants.then(function(meeting) {
+            meeting.participants.push(participant);
+            let user_promise = Mongoose.model['Users'].find_by_id(participant.user_id);
+            user_promise.then(function(user) {
+                user.meetings.push(meeting);
+            })
+        })
+    }
+})
+
+
+module.exports = Mongoose.model('MeetingParticipants', meeting_participants);

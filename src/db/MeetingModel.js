@@ -32,7 +32,11 @@ let meeting_schema = new Schema({
     },
     modified_at: {
         type: Date
-    }
+    },
+    participants: [{
+        type: Schema.Types.ObjectId,
+        ref: 'MeetingParticipants'
+    }]
 })
 
 meeting_schema.pre('save', function(next) {
@@ -43,12 +47,15 @@ meeting_schema.pre('save', function(next) {
     next();
 });
 
-meeting_schema.post('save', function(meeting) {
-    let promise = Mongoose.model('Users').findById(meeting.created_by)
-    promise.then((user) => {
-        user.meetings.push(meeting)
-        user.save
-    })
+meeting_schema.post('save', function(err, meeting) {
+    if (!err) {
+        let promise = Mongoose.model('Users').findById(meeting.created_by)
+        promise.then((user) => {
+            user.meetings.push(meeting)
+            user.save
+        })
+    }
+
 })
 
 meeting_schema.statics.get_all = function() {
